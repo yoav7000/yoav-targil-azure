@@ -14,6 +14,9 @@ resource "azurerm_network_security_group" "entry_nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "azurerm_public_ip" "entry_vm_public_ip" {
@@ -21,6 +24,9 @@ resource "azurerm_public_ip" "entry_vm_public_ip" {
   location            = azurerm_resource_group.entry_rg.location
   resource_group_name = azurerm_resource_group.entry_rg.name
   allocation_method   = "Static"
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "azurerm_network_interface" "entry_vm_nic" {
@@ -33,6 +39,9 @@ resource "azurerm_network_interface" "entry_vm_nic" {
     subnet_id                     = azurerm_subnet.entry_subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.entry_vm_public_ip.id
+  }
+  lifecycle {
+    ignore_changes = [tags]
   }
 }
 
@@ -63,5 +72,8 @@ resource "azurerm_windows_virtual_machine" "entry_vm" {
     offer     = "WindowsServer"
     sku       = "2022-datacenter-azure-edition"
     version   = "latest"
+  }
+  lifecycle {
+    ignore_changes = [tags]
   }
 }

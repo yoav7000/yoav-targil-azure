@@ -10,12 +10,18 @@ resource "azurerm_public_ip" "no_entry_vm_public_ip" {
   location            = azurerm_resource_group.entry_rg.location
   resource_group_name = azurerm_resource_group.entry_rg.name
   allocation_method   = "Static"
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "azurerm_network_interface" "no_entry_vm_nic" {
   name                = "no-entry-vm-nic"
   location            = azurerm_resource_group.entry_rg.location
   resource_group_name = azurerm_resource_group.entry_rg.name
+  lifecycle {
+    ignore_changes = [tags]
+  }
 
   ip_configuration {
     name                          = "no_entry_nic_configuration"
@@ -52,5 +58,8 @@ resource "azurerm_windows_virtual_machine" "no_entry_vm" {
     offer     = "WindowsServer"
     sku       = "2022-datacenter-azure-edition"
     version   = "latest"
+  }
+  lifecycle {
+    ignore_changes = [tags]
   }
 }

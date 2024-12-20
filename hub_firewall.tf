@@ -1,9 +1,19 @@
+resource "azurerm_subnet" "hub_firewall_subnet" {
+  name                 = "AzureFirewallSubnet"
+  resource_group_name  = azurerm_resource_group.hub_rg.name
+  virtual_network_name = azurerm_virtual_network.hub_vnet.name
+  address_prefixes = ["10.1.2.0/24"]
+}
+
 resource "azurerm_public_ip" "firewall_public_ip" {
   name                = "firewall-public-ip"
   location            = azurerm_resource_group.hub_rg.location
   resource_group_name = azurerm_resource_group.hub_rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 
@@ -16,29 +26,27 @@ resource "azurerm_firewall" "hub_firewall" {
 
   ip_configuration {
     name                 = "configuration"
-    subnet_id            = azurerm_subnet.hub_subnet.id
+    subnet_id            = azurerm_subnet.hub_firewall_subnet.id
     public_ip_address_id = azurerm_public_ip.firewall_public_ip.id
+  }
+  lifecycle {
+    ignore_changes = [tags]
   }
 }
 
-
-resource "azurerm_route_table" "hub_route_table" {
-  name                = "hub-route-table"
-  location            = azurerm_resource_group.hub_rg.location
+resource "azurerm_firewall_network_rule_collection" "hub_firewall_rules" {
+  name                = "allow-hub-to-spoke"
+  azure_firewall_name = azurerm_firewall.hub_firewall.name
   resource_group_name = azurerm_resource_group.hub_rg.name
+  priority            = 100
+  action              = "Allow"
+
+  rule {
+    name = "hub-to-spoke"
+    source_addresses = ["10.1.0.0/16"] # Hub VNet
+    destination_addresses = ["10.2.0.0/16"] # Spoke VNet
+    destination_ports = ["*"]
+    protocols = ["Any"]
+  }
 }
 
-resource "azurerm_route" "firewall_route" {
-  name                   = "firewall-route"
-  resource_group_name    = azurerm_resource_group.hub_rg.name
-  route_table_name       = azurerm_route_table.hub_route_table.name
-  address_prefix         = "0.0.0.0/0"
-  next_hop_type          = "VirtualAppliance"
-  next_hop_in_ip_address = azurerm_firewall.hub_firewall.ip_configuration[0].private_ip_address
-}
-
-
-resource "azurerm_subnet_route_table_association" "hub_route_association" {
-  subnet_id      = azurerm_subnet.hub_subnet.id
-  route_table_id = azurerm_route_table.hub_route_table.id
-}

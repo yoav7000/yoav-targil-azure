@@ -3,6 +3,9 @@ resource "azurerm_virtual_network" "hub_vnet" {
   location            = azurerm_resource_group.hub_rg.location
   resource_group_name = azurerm_resource_group.hub_rg.name
   address_space = ["10.1.0.0/16"]
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 resource "azurerm_subnet" "hub_subnet" {

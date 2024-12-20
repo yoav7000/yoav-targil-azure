@@ -26,6 +26,9 @@ resource "azurerm_network_interface" "spoke_vm_nic" {
     subnet_id                     = azurerm_subnet.spoke_subnet.id
     private_ip_address_allocation = "Dynamic"
   }
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
 
 # # Connect the security group to the subnet
@@ -54,5 +57,8 @@ resource "azurerm_linux_virtual_machine" "spoke_linux_vm" {
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
+  }
+  lifecycle {
+    ignore_changes = [tags]
   }
 }
