@@ -1,8 +1,4 @@
-locals {
-  entry_vm_name = "yb-entry-win"
-}
-
-resource "azurerm_network_security_group" "entry-nsg" {
+resource "azurerm_network_security_group" "entry_nsg" {
   name                = "entry-nsg"
   location            = azurerm_resource_group.entry_rg.location
   resource_group_name = azurerm_resource_group.entry_rg.name
@@ -27,34 +23,34 @@ resource "azurerm_public_ip" "entry_vm_public_ip" {
   allocation_method   = "Static"
 }
 
-resource "azurerm_network_interface" "entry-vm-nic" {
+resource "azurerm_network_interface" "entry_vm_nic" {
   name                = "entry-vm-nic"
   location            = azurerm_resource_group.entry_rg.location
   resource_group_name = azurerm_resource_group.entry_rg.name
 
   ip_configuration {
     name                          = "entry_nic_configuration"
-    subnet_id                     = azurerm_subnet.entry-subnet.id
+    subnet_id                     = azurerm_subnet.entry_subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.entry_vm_public_ip.id
   }
 }
 
-# Connect the security group to the network interface
-resource "azurerm_network_interface_security_group_association" "connect-entry-nsg-to-nic" {
-  network_interface_id      = azurerm_network_interface.entry-vm-nic.id
-  network_security_group_id = azurerm_network_security_group.entry-nsg.id
+# Connect the security group to the subnet
+resource "azurerm_subnet_network_security_group_association" "connect_entry_nsg_to_subnet" {
+  subnet_id                 = azurerm_subnet.entry_subnet.id
+  network_security_group_id = azurerm_network_security_group.entry_nsg.id
 }
 
-resource "azurerm_windows_virtual_machine" "entry-vm" {
-  name                = local.entry_vm_name
+resource "azurerm_windows_virtual_machine" "entry_vm" {
+  name                = "yb-entry-win"
   resource_group_name = azurerm_resource_group.entry_rg.name
   location            = azurerm_resource_group.entry_rg.location
   size                = "Standard_F2s_v2"
   admin_username      = var.entry_vm_username
   admin_password      = var.entry_vm_password
   network_interface_ids = [
-    azurerm_network_interface.entry-vm-nic.id,
+    azurerm_network_interface.entry_vm_nic.id,
   ]
 
   os_disk {
