@@ -37,6 +37,7 @@ resource "azurerm_subnet_network_security_group_association" "connect_no_entry_n
   network_security_group_id = azurerm_network_security_group.entry_nsg.id
 }
 
+# Vm in different subnet for testing no traffic to spoke vm.
 resource "azurerm_windows_virtual_machine" "no_entry_vm" {
   name                = "yb-no-entry-win"
   resource_group_name = azurerm_resource_group.entry_rg.name

@@ -43,8 +43,8 @@ resource "azurerm_firewall_network_rule_collection" "hub_firewall_rules" {
 
   rule {
     name = "entry-to-spoke"
-    source_addresses = ["10.0.1.0/24"] # Entry Windows VM subnet.
-    destination_addresses = ["10.2.0.0/16"] # Spoke VNet
+    source_addresses = azurerm_subnet.entry_subnet.address_prefixes # Entry Windows VM subnet.
+    destination_addresses = tolist(azurerm_virtual_network.spoke_vnet.address_space) # Spoke VNet address space.
     destination_ports = ["*"]
     protocols = ["Any"]
   }

@@ -11,7 +11,7 @@ resource "azurerm_route" "entry_firewall_route" {
   name                   = "entry-firewall-route"
   resource_group_name    = azurerm_resource_group.entry_rg.name
   route_table_name       = azurerm_route_table.entry_route_table.name
-  address_prefix         = "10.2.0.0/16"
+  address_prefix         = tolist(azurerm_virtual_network.spoke_vnet.address_space)[0]
   next_hop_type          = "VirtualAppliance"
   next_hop_in_ip_address = azurerm_firewall.hub_firewall.ip_configuration[0].private_ip_address
 }

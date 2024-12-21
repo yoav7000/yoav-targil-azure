@@ -11,7 +11,7 @@ resource "azurerm_network_security_group" "spoke_vm_nsg" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = "10.0.1.0/24"  # Entry Vm subnet
+    source_address_prefix      = azurerm_subnet.entry_subnet.address_prefixes[0]  # Entry Vm subnet
     destination_address_prefix = "*"
   }
 

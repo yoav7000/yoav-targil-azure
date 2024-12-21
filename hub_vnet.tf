@@ -32,22 +32,3 @@ resource "azurerm_virtual_network_peering" "hub_entry_vnet_peering" {
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
 }
-# #TODO: DELETE LATER!!!!!!!!!!
-# resource "azurerm_virtual_network_peering" "entry_spoke_vnet_peering" {
-#   name                         = "peer_entry_to_spoke"
-#   resource_group_name          = azurerm_resource_group.entry_rg.name
-#   virtual_network_name         = azurerm_virtual_network.entry_vnet.name
-#   remote_virtual_network_id    = azurerm_virtual_network.spoke_vnet.id
-#   allow_virtual_network_access = true
-#   allow_forwarded_traffic      = true
-# }
-#
-# #TODO: DELETE LATER!!!!!!!!!!
-# resource "azurerm_virtual_network_peering" "spoke_entry_vnet_peering" {
-#   name                         = "peer_spoke_to_entry"
-#   resource_group_name          = azurerm_resource_group.spoke_rg.name
-#   virtual_network_name         = azurerm_virtual_network.spoke_vnet.name
-#   remote_virtual_network_id    = azurerm_virtual_network.entry_vnet.id
-#   allow_virtual_network_access = true
-#   allow_forwarded_traffic      = true
-# }
