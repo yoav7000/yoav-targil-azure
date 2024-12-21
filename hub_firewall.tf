@@ -43,42 +43,10 @@ resource "azurerm_firewall_network_rule_collection" "hub_firewall_rules" {
 
   rule {
     name = "entry-to-spoke"
-    source_addresses = ["10.0.1.0/24"] # Hub VNet #TODO: CHECK ENTRY SUBNET
+    source_addresses = ["10.0.1.0/24"] # Entry Windows VM subnet.
     destination_addresses = ["10.2.0.0/16"] # Spoke VNet
     destination_ports = ["*"]
     protocols = ["Any"]
   }
 }
-#TODO: DELETE!!!!!!!!!!
-# resource "azurerm_firewall_network_rule_collection" "hub2_firewall_rules" {
-#   name                = "allow-spoke-to-entry"
-#   azure_firewall_name = azurerm_firewall.hub_firewall.name
-#   resource_group_name = azurerm_resource_group.hub_rg.name
-#   priority            = 101
-#   action              = "Allow"
-#
-#   rule {
-#     name = "spoke-to-entry"
-#     source_addresses = ["10.2.0.0/16"] # Hub VNet #TODO: CHECK ENTRY SUBNET
-#     destination_addresses = ["10.0.0.0/16"] # Spoke VNet
-#     destination_ports = ["*"]
-#     protocols = ["Any"]
-#   }
-# }
-#
-# resource "azurerm_firewall_network_rule_collection" "allow_all_traffic" {
-#   name                = "allow-all-traffic"
-#   azure_firewall_name = azurerm_firewall.hub_firewall.name
-#   resource_group_name = azurerm_resource_group.hub_rg.name
-#   priority            = 101
-#   action              = "Allow"
-#   rule {
-#     name     = "allow-all"
-#     protocols = ["Any"]
-#     source_addresses = ["*"]
-#     destination_addresses = ["*"]
-#     destination_ports = ["*"]
-#   }
-# }
-
 
