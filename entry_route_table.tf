@@ -16,7 +16,7 @@ resource "azurerm_route" "entry_firewall_route" {
   next_hop_in_ip_address = azurerm_firewall.hub_firewall.ip_configuration[0].private_ip_address
 }
 
-
+#TODO: CHECK IF NEEDED!!!!
 resource "azurerm_route" "default_internet_route" {
   name                = "default-internet-route"
   resource_group_name = azurerm_resource_group.entry_rg.name

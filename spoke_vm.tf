@@ -1,20 +1,42 @@
-# resource "azurerm_network_security_group" "entry_nsg" {
-#   name                = "entry-nsg"
-#   location            = azurerm_resource_group.entry_rg.location
-#   resource_group_name = azurerm_resource_group.entry_rg.name
-#
-#   security_rule {
-#     name                       = "RDP"
-#     priority                   = 1000
-#     direction                  = "Inbound"
-#     access                     = "Allow"
-#     protocol                   = "*"
-#     source_port_range          = "*"
-#     destination_port_range     = "3389"
-#     source_address_prefix      = "*"
-#     destination_address_prefix = "*"
-#   }
-# }
+resource "azurerm_network_security_group" "spoke_vm_nsg" {
+  name                = "spoke-vm-nsg"
+  location            = azurerm_resource_group.spoke_rg.location
+  resource_group_name = azurerm_resource_group.spoke_rg.name
+
+  security_rule {
+    name                       = "EntryToSpoke"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "10.0.1.0/24"  # Entry Vm subnet
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "Deny-All-Other-Traffic"
+    priority                   = 200
+    direction                  = "Inbound"
+    access                     = "Deny"
+    protocol                   = "*"
+    source_address_prefix      = "*"
+    source_port_range          = "*"
+    destination_address_prefix = "*"
+    destination_port_range     = "*"
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+# Connect the security group to the subnet
+resource "azurerm_subnet_network_security_group_association" "connect_spoke_vm_nsg_to_subnet" {
+  subnet_id                 = azurerm_subnet.spoke_subnet.id
+  network_security_group_id = azurerm_network_security_group.spoke_vm_nsg.id
+}
 
 resource "azurerm_network_interface" "spoke_vm_nic" {
   name                = "spoke-vm-nic"
@@ -30,12 +52,6 @@ resource "azurerm_network_interface" "spoke_vm_nic" {
     ignore_changes = [tags]
   }
 }
-
-# # Connect the security group to the subnet
-# resource "azurerm_subnet_network_security_group_association" "connect_entry_nsg_to_subnet" {
-#   subnet_id                 = azurerm_subnet.entry_subnet.id
-#   network_security_group_id = azurerm_network_security_group.entry_nsg.id
-# }
 
 
 resource "azurerm_linux_virtual_machine" "spoke_linux_vm" {
