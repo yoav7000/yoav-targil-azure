@@ -17,15 +17,6 @@ resource "azurerm_route" "entry_firewall_route" {
 }
 
 
-#TODO: CHECK IF NEEDED!!!!
-resource "azurerm_route" "default_internet_route" {
-  name                = "default-internet-route"
-  resource_group_name = azurerm_resource_group.entry_rg.name
-  route_table_name    = azurerm_route_table.entry_route_table.name
-  address_prefix      = "0.0.0.0/0"
-  next_hop_type       = "Internet"
-}
-
 # Associate entry vm subnet to toute table
 resource "azurerm_subnet_route_table_association" "entry_route_association" {
   subnet_id      = azurerm_subnet.entry_subnet.id

@@ -14,7 +14,7 @@ resource "azurerm_network_interface" "spoke_vm_nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "spoke_linux_vm" {
-  name                            = "linux-vm"
+  name                            = "yb-spoke-linux-vm"
   location                        = azurerm_resource_group.spoke_rg.location
   resource_group_name             = azurerm_resource_group.spoke_rg.name
   network_interface_ids = [azurerm_network_interface.spoke_vm_nic.id]
