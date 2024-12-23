@@ -16,14 +16,6 @@ resource "azurerm_route" "spoke_firewall_route" {
   next_hop_in_ip_address = azurerm_firewall.hub_firewall.ip_configuration[0].private_ip_address
 }
 
-#TODO: CHECK IF NEED TO BE IN VNET OR FIREWALL
-resource "azurerm_route" "spoke_in_vnet_route" {
-  name                   = "spoke-in-vnet-route"
-  resource_group_name    = azurerm_resource_group.spoke_rg.name
-  route_table_name       = azurerm_route_table.spoke_route_table.name
-  address_prefix         = tolist(azurerm_virtual_network.spoke_vnet.address_space)[0] # Spoke Vnet Address space.
-  next_hop_type          = "VnetLocal"
-}
 
 resource "azurerm_subnet_route_table_association" "spoke_route_association" {
   subnet_id      = azurerm_subnet.spoke_subnet.id

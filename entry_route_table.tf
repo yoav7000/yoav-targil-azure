@@ -23,11 +23,6 @@ resource "azurerm_subnet_route_table_association" "entry_route_association" {
   route_table_id = azurerm_route_table.entry_route_table.id
 }
 
-#TODO: CHECK IF KEEP NO ENTRY, IF NOT DELETE THIS
-# Associate not entry vm subnet to toute table so traffic will go to fw.
-resource "azurerm_subnet_route_table_association" "no_entry_route_association" {
-  subnet_id      = azurerm_subnet.no_entry_subnet.id
-  route_table_id = azurerm_route_table.entry_route_table.id
-}
+
 
 
