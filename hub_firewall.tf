@@ -41,7 +41,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "hub_firewall_policy_ru
       destination_ports = ["22"]
     }
     rule {
-      name = "allow-icmp-entry-to-spoke" # For testing ping connections.
+      name = "allow-icmp-entry-to-spoke" # Allow Icmp for testing ping connections.
       protocols = ["ICMP"]
       source_addresses = azurerm_subnet.entry_subnet.address_prefixes # Entry Windows VM subnet.
       destination_addresses = tolist(azurerm_virtual_network.spoke_vnet.address_space) # Spoke VNet address space.

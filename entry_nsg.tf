@@ -11,7 +11,7 @@ resource "azurerm_network_security_group" "entry_nsg" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "3389"
-    source_address_prefix      = "*"
+    source_address_prefixes      = var.allowed_rdp_ips # Allow only specific ips to rdp.
     destination_address_prefix = "*"
   }
   lifecycle {

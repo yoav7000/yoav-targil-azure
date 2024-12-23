@@ -1,3 +1,8 @@
+variable "allowed_rdp_ips" {
+  description = "List of IP addresses allowed for RDP access to Entry"
+  type = list(string)
+}
+
 variable "entry_vm_username" {
   description = "The username for the Windows VM"
   type        = string
