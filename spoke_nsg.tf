@@ -4,11 +4,23 @@ resource "azurerm_network_security_group" "spoke_vm_nsg" {
   resource_group_name = azurerm_resource_group.spoke_rg.name
 
   security_rule {
-    name                       = "EntryToSpoke"
+    name                       = "allow-ssh-entry-to-spoke"
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "*"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = azurerm_subnet.entry_subnet.address_prefixes[0]  # Entry Vm subnet
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "allow-icmp-entry-to-spoke"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Icmp"
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = azurerm_subnet.entry_subnet.address_prefixes[0]  # Entry Vm subnet

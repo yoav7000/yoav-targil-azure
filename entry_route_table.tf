@@ -16,6 +16,7 @@ resource "azurerm_route" "entry_firewall_route" {
   next_hop_in_ip_address = azurerm_firewall.hub_firewall.ip_configuration[0].private_ip_address
 }
 
+
 #TODO: CHECK IF NEEDED!!!!
 resource "azurerm_route" "default_internet_route" {
   name                = "default-internet-route"
@@ -25,9 +26,16 @@ resource "azurerm_route" "default_internet_route" {
   next_hop_type       = "Internet"
 }
 
-
+# Associate entry vm subnet to toute table
 resource "azurerm_subnet_route_table_association" "entry_route_association" {
   subnet_id      = azurerm_subnet.entry_subnet.id
+  route_table_id = azurerm_route_table.entry_route_table.id
+}
+
+#TODO: CHECK IF KEEP NO ENTRY, IF NOT DELETE THIS
+# Associate not entry vm subnet to toute table so traffic will go to fw.
+resource "azurerm_subnet_route_table_association" "no_entry_route_association" {
+  subnet_id      = azurerm_subnet.no_entry_subnet.id
   route_table_id = azurerm_route_table.entry_route_table.id
 }
 
